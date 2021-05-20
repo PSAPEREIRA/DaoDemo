@@ -10,7 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SellerDaoJDBC implements SellerDao {
 
@@ -53,7 +56,7 @@ public class SellerDaoJDBC implements SellerDao {
 
                 Department dep = instantiateDepartment(resultSet);
 
-                Seller objSeller = instantiateSeller(resultSet,dep);
+                Seller objSeller = instantiateSeller(resultSet, dep);
 
                 return objSeller;
             }
@@ -71,8 +74,55 @@ public class SellerDaoJDBC implements SellerDao {
         }
     }
 
+    @Override
+    public List<Seller> findByDepartment(Department department) {
+
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Seller> sellerList = new ArrayList<>();
+
+        try {
+            preparedStatement = connection.prepareStatement(
+                    "SELECT seller.* ,department.Name as 'DepName' "
+                            + "FROM seller INNER JOIN department "
+                            + "ON seller.DepartmentId = department.Id "
+                            + "WHERE department.Id = ? "
+                            + "ORDER BY Name");
+
+            preparedStatement.setInt(1, department.getId());
+            resultSet = preparedStatement.executeQuery();
+
+            Map<Integer, Department> departmentMap = new HashMap<>();
+
+            while (resultSet.next()) {
+
+                Department dep = departmentMap.get(resultSet.getInt("DepartmentId"));
+
+                if (dep == null) {
+                    dep = instantiateDepartment(resultSet);
+                    departmentMap.put(resultSet.getInt("DepartmentId"), dep);
+                }
+
+                Seller objSeller = instantiateSeller(resultSet, dep);
+
+                sellerList.add(objSeller);
+            }
+
+            return sellerList;
+
+        } catch (SQLException sqlException) {
+
+            throw new DbException(sqlException.getMessage());
+
+        } finally {
+
+            DB.closeStatement(preparedStatement);
+            DB.closeResultSet(resultSet);
+        }
+    }
+
     private Seller instantiateSeller(ResultSet resultSet, Department dep) throws SQLException {
-        Seller objSeller=new Seller();
+        Seller objSeller = new Seller();
         objSeller.setId(resultSet.getInt("Id"));
         objSeller.setName(resultSet.getString("Name"));
         objSeller.setEmail(resultSet.getString("Email"));
