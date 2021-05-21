@@ -6,10 +6,7 @@ import model.Dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +23,46 @@ public class SellerDaoJDBC implements SellerDao {
     @Override
     public void insert(Seller obj) {
 
+        PreparedStatement preparedStatement = null;
+
+        try {
+            preparedStatement = connection.prepareStatement(
+                    "INSERT INTO seller "
+                            + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+                            + "VALUES"
+                            + "(?,?,?,?,?)",
+                    Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, obj.getName());
+            preparedStatement.setString(2, obj.getEmail());
+            preparedStatement.setDate(3, new Date(obj.getBirthDate().getTime()));
+            preparedStatement.setDouble(4, obj.getBaseSalary());
+            preparedStatement.setInt(5, obj.getDepartment().getId());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+                if (resultSet.next()) {
+                    int id = resultSet.getInt(1);
+                    obj.setId(id);
+                }
+                DB.closeResultSet(resultSet);
+            } else {
+                throw new DbException("Unexpected error!!!No modification was made!");
+            }
+
+        } catch (SQLException sqlException) {
+
+            throw new DbException(sqlException.getMessage());
+
+        } finally {
+
+            DB.closeStatement(preparedStatement);
+
+        }
     }
 
     @Override
@@ -143,46 +180,46 @@ public class SellerDaoJDBC implements SellerDao {
     @Override
     public List<Seller> findAll() {
 
-            PreparedStatement preparedStatement = null;
-            ResultSet resultSet = null;
-            List<Seller> sellerList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Seller> sellerList = new ArrayList<>();
 
-            try {
-                preparedStatement = connection.prepareStatement(
-                        "SELECT seller.* ,department.Name as 'DepName' "
-                                + "FROM seller INNER JOIN department "
-                                + "ON seller.DepartmentId = department.Id "
-                                + "ORDER BY Name");
+        try {
+            preparedStatement = connection.prepareStatement(
+                    "SELECT seller.* ,department.Name as 'DepName' "
+                            + "FROM seller INNER JOIN department "
+                            + "ON seller.DepartmentId = department.Id "
+                            + "ORDER BY Name");
 
-                resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
-                Map<Integer, Department> departmentMap = new HashMap<>();
+            Map<Integer, Department> departmentMap = new HashMap<>();
 
-                while (resultSet.next()) {
+            while (resultSet.next()) {
 
-                    Department dep = departmentMap.get(resultSet.getInt("DepartmentId"));
+                Department dep = departmentMap.get(resultSet.getInt("DepartmentId"));
 
-                    if (dep == null) {
-                        dep = instantiateDepartment(resultSet);
-                        departmentMap.put(resultSet.getInt("DepartmentId"), dep);
-                    }
-
-                    Seller objSeller = instantiateSeller(resultSet, dep);
-
-                    sellerList.add(objSeller);
+                if (dep == null) {
+                    dep = instantiateDepartment(resultSet);
+                    departmentMap.put(resultSet.getInt("DepartmentId"), dep);
                 }
 
-                return sellerList;
+                Seller objSeller = instantiateSeller(resultSet, dep);
 
-            } catch (SQLException sqlException) {
-
-                throw new DbException(sqlException.getMessage());
-
-            } finally {
-
-                DB.closeStatement(preparedStatement);
-                DB.closeResultSet(resultSet);
+                sellerList.add(objSeller);
             }
+
+            return sellerList;
+
+        } catch (SQLException sqlException) {
+
+            throw new DbException(sqlException.getMessage());
+
+        } finally {
+
+            DB.closeStatement(preparedStatement);
+            DB.closeResultSet(resultSet);
         }
     }
+}
 
