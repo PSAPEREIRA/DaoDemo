@@ -23,25 +23,33 @@ public class Program {
 
         System.out.println(" \n === TEST2 : seller findByDepartment ===");
         Department department = new Department(2, null);
-        List<Seller>sellerList= sellerDao.findByDepartment(department);
+        List<Seller> sellerList = sellerDao.findByDepartment(department);
 
-        for (Seller objSeller: sellerList){
+        for (Seller objSeller : sellerList) {
             System.out.println(objSeller);
         }
 
         System.out.println(" \n === TEST3 : seller findAll ===");
-        List<Seller>sellerListAll = sellerDao.findAll();
+        List<Seller> sellerListAll = sellerDao.findAll();
 
-        for (Seller objSeller : sellerListAll){
+        for (Seller objSeller : sellerListAll) {
             System.out.println(objSeller);
         }
 
-        System.out.println(" \n === TEST4 : seller Update ===");
+        System.out.println(" \n === TEST4 : INSERT seller ===");
 
-        Seller newSeller= new Seller(null, "Greg", "greg@gmail.com",new Date(),4000.0,department);
+        Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, department);
 
         sellerDao.insert(newSeller);
 
         System.out.println("Inserted! New id = " + newSeller.getId());
-        }
+
+
+        System.out.println(" \n === TEST5 : seller Update ===");
+        Seller sellerToUpdate = sellerDao.findById(1);
+        sellerToUpdate.setName("Martha Wayne");
+        sellerDao.update(sellerToUpdate);
+        System.out.println("Update completed");
     }
+}
+
