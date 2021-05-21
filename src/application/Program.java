@@ -50,6 +50,16 @@ public class Program {
         sellerToUpdate.setName("Martha Wayne");
         sellerDao.update(sellerToUpdate);
         System.out.println("Update completed");
+
+        System.out.println(" \n === TEST6 : DELETE seller  ===");
+        Seller toBeDeletedSeller = new Seller(null, "DeletedGuy", "deletedGmail@gmail.com", new Date(), 4000.0, department);
+        sellerDao.insert(toBeDeletedSeller);
+        System.out.println("Inserted! New id = " + toBeDeletedSeller.getId());
+
+        int toBeDeletedId = 20; //toBeDeletedSeller.getId();
+        sellerDao.deleteById(toBeDeletedId);
+        System.out.println("Delete executed");
+
     }
 }
 
