@@ -5,14 +5,17 @@ Projecto do curso Udemy-DevSuperior
 
 Dao-Demo é uma aplicação backend com as funcionalidades de INSERT,DELETE,UPDATE,FindById and FindALL numa BD MySQL que contém duas tabelas Sellers e Department, com relacionamento ManytOne,  
 
-## Layout web no data
-![Web 1](https://github.com/PSAPEREIRA/projectoSDS3/blob/main/assets/Capturar3.PNG)
+## PADRAO DAO 
+### Para cada entidade, haverá um objeto responsável por fazer acesso a dados relacionado a esta entidade
+### Cada DAO será definido por uma interface
+### A injeção de dependência pode ser feita por meio do padrão de projeto Factory
+![Web 1](https://github.com/PSAPEREIRA/DaoDemo/blob/main/Assets/DeomDaoUml.PNG)
 
 ## Layout web completed
-![Web 2](https://github.com/PSAPEREIRA/projectoSDS3/blob/main/assets/Final.PNG)
+![Web 2](https://github.com/PSAPEREIRA/DaoDemo/blob/main/Assets/DeomDao2Uml.PNG)
 
 ## Modelo conceitual
-![Modelo Conceitual](https://github.com/PSAPEREIRA/projectoSDS3/blob/main/assets/Modelo.PNG)
+![Modelo Conceitual](https://github.com/PSAPEREIRA/DaoDemo/blob/main/Assets/DeomDao3Uml.PNG)
 
 # Tecnologias utilizadas
 ## Back end
