@@ -11,10 +11,11 @@ Dao-Demo é uma aplicação backend com as funcionalidades de INSERT,DELETE,UPDA
 ### A injeção de dependência pode ser feita por meio do padrão de projeto Factory
 ![Web 1](https://github.com/PSAPEREIRA/DaoDemo/blob/main/Assets/DeomDaoUml.PNG)
 
-## Layout web completed
+## Relação entre as Entidades do Modelo
 ![Web 2](https://github.com/PSAPEREIRA/DaoDemo/blob/main/Assets/DeomDao2Uml.PNG)
 
-## Modelo conceitual
+## UML Funcional representando a correcta implemtentação da execução do codigo 
+### Reutilização e sem repetições de solicitação de dados 
 ![Modelo Conceitual](https://github.com/PSAPEREIRA/DaoDemo/blob/main/Assets/DeomDao3Uml.PNG)
 
 # Tecnologias utilizadas
